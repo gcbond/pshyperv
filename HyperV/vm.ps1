@@ -205,7 +205,7 @@ Function Get-VMSummary
         if ($VM.count -gt 1 ) {[Void]$PSBoundParameters.Remove("VM") ;  $VM | ForEach-object {Get-VMSummary -VM $_  @PSBoundParameters}}
         if ($vm.__CLASS -eq 'Msvm_ComputerSystem') { 
             $VSMgtSvc=Get-WmiObject -computerName $Vm.__Server -NameSpace $HyperVNamespace  -Class "MsVM_virtualSystemManagementService" 
-            $result=$VSMgtSvc.GetSummaryInformation( @( (Get-VMSettingData $vm ).__Path ) ,  @(0,1,2,3,4,100,101,102,103,104,105,106,107,108))
+			if($VM -is [System.Management.ManagementObject]) { $result=$VSMgtSvc.GetSummaryInformation( @( (Get-VMSettingData $vm ).__Path ) ,  @(0,1,2,3,4,100,101,102,103,104,105,106,107,108)) }
             if ($Result.ReturnValue -eq 0) {$result.SummaryInformation | foreach-object {
                  New-Object PSObject -Property @{      
                    "Host"             =  $VM.__server                   ;  "VMElementName"    =  $_.elementname
